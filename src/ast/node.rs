@@ -6,9 +6,7 @@ pub struct Node<'a> {
     pub line_no: i32,
     pub left: &'a Node<'a>,
     pub right: &'a Node<'a>,
-    pub next: &'a Node<'a>
+    pub next: &'a Node<'a>,
 }
 
-pub struct IdList {
-
-}
+pub struct IdList {}
