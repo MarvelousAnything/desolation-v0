@@ -1,36 +1,11 @@
-use crate::lex::keyword::Keyword;
+use crate::lex::types::{KeywordToken, LiteralToken, SyntaxToken};
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub enum TokenType {
-    Keyword(Keyword),
-    LBrace,
-    RBrace,
-    LParen,
-    RParen,
-    Assign,
-    Comma,
-    Dot,
-    Minus,
-    Not,
-    Plus,
-    Times,
-    Slash,
-    And,
-    Or,
-    Xor,
-    Mod,
-    Eq,
-    Neq,
-    Lt,
-    Leq,
-    Gt,
-    Geq,
-    LShift,
-    RShift,
-    CharacterLiteral(char),
-    Identifier(String),
-    IntegerLiteral(i64),
-    StringLiteral(String),
+    Keyword(KeywordToken),
+    Syntax(SyntaxToken),
+    IdentifierToken(String),
+    Literal(LiteralToken),
     Unknown(char),
     Eof,
     NL
@@ -47,27 +22,9 @@ impl TokenType {
     }
 
     pub fn from_char(c: char) -> Self {
-        match c {
-            '{' => TokenType::LBrace,
-            '}' => TokenType::RBrace,
-            '(' => TokenType::LParen,
-            ')' => TokenType::RParen,
-            ':' => TokenType::Assign,
-            ',' => TokenType::Comma,
-            '.' => TokenType::Dot,
-            '-' => TokenType::Minus,
-            '!' => TokenType::Not,
-            '+' => TokenType::Plus,
-            '*' => TokenType::Times,
-            '/' => TokenType::Slash,
-            '&' => TokenType::And,
-            '|' => TokenType::Or,
-            '^' => TokenType::Xor,
-            '%' => TokenType::Mod,
-            '<' => TokenType::Lt,
-            '>' => TokenType::Gt,
-            _ => TokenType::Unknown(c),
-        }
+        SyntaxToken::from_char(c)
+            .map(TokenType::Syntax)
+            .unwrap_or_else(|| TokenType::Unknown(c))
     }
 }
 
@@ -89,19 +46,19 @@ impl Token {
     }
 
     pub fn is_identifier(&self) -> bool {
-        matches!(self.token_type, TokenType::Identifier(_))
+        matches!(self.token_type, TokenType::IdentifierToken(_))
     }
 
     pub fn is_integer_literal(&self) -> bool {
-        matches!(self.token_type, TokenType::IntegerLiteral(_))
+        matches!(self.token_type, TokenType::Literal(LiteralToken::IntegerLiteral(_)))
     }
 
     pub fn is_string_literal(&self) -> bool {
-        matches!(self.token_type, TokenType::StringLiteral(_))
+        matches!(self.token_type, TokenType::Literal(LiteralToken::StringLiteral(_)))
     }
 
     pub fn is_character_literal(&self) -> bool {
-        matches!(self.token_type, TokenType::CharacterLiteral(_))
+        matches!(self.token_type, TokenType::Literal(LiteralToken::CharacterLiteral(_)))
     }
 
     pub fn index(&self) -> usize {

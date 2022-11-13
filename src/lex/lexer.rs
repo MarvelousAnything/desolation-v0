@@ -3,7 +3,7 @@ use crate::lex::token::{Token, TokenType};
 use anyhow::{bail, ensure, Result};
 use log::{debug};
 use thiserror::Error;
-use crate::lex::keyword::Keyword;
+use crate::lex::types::{KeywordToken, LiteralToken};
 
 #[derive(Debug, Clone)]
 pub struct Lexer {
@@ -39,7 +39,7 @@ pub enum LexerError {
 
 #[derive(Debug)]
 pub struct TokenStream {
-    tokens: Vec<Token>,
+    pub tokens: Vec<Token>,
 }
 
 impl Display for TokenStream {
@@ -109,6 +109,10 @@ impl Lexer {
         let mut tokens = Vec::new();
         while self.has_next() {
             tokens.push(self.get_next_token()?);
+        }
+        if !self.has_next() {
+            debug!("No more tokens to lex");
+            tokens.push(TokenType::Eof.at(self.index, self.line_no, self.col_no));
         }
 
         info!("Lexed {} tokens", tokens.len());
@@ -257,9 +261,6 @@ impl Lexer {
     }
 
     fn get_next_token(&mut self) -> Result<Token> {
-        if !self.has_next() {
-            return Ok(TokenType::Eof.at(self.index, self.line_no, self.col_no));
-        }
         let start = (self.index, self.line_no, self.col_no);
         let token = match self.curr_char {
             n if self.is_whitespace() => {
@@ -271,7 +272,7 @@ impl Lexer {
             '\n' => {
                 trace!("Found newline at {}:{}[{}]", self.line_no, self.col_no, self.index);
                 // fold newlines into a single token
-                self.col_no = 1;
+                self.col_no = 0;
                 self.line_no += 1;
                 self.advance()?;
                 TokenType::NL
@@ -280,31 +281,31 @@ impl Lexer {
             // TODO: Look into this.
             n if n.is_alphabetic() => {
                 let identifier = self.collect_identifier()?;
-                if let Some(keyword) = Keyword::from_str(&identifier) {
+                if let Some(keyword) = KeywordToken::from_str(&identifier) {
                     debug!("Found keyword {:?} at {}:{}[{}]", keyword, self.line_no, self.col_no, self.index);
                     TokenType::Keyword(keyword)
                 } else {
                     debug!("Found identifier {:?} at {}:{}[{}]", identifier, self.line_no, self.col_no, self.index);
-                    TokenType::Identifier(identifier)
+                    TokenType::IdentifierToken(identifier)
                 }
             }
             n if n.is_numeric() => {
                 let integer = self.collect_integer()?;
                 debug!("Collected integer: {} at {}:{}[{}] to {}:{}[{}]", integer, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
-                TokenType::IntegerLiteral(integer)
+                TokenType::Literal(LiteralToken::IntegerLiteral(integer))
             }
             '"' => {
                 self.advance()?;
                 let string = self.collect_string()?;
-                debug!("Collected string: {} at {}:{}[{}] to {}:{}[{}]", string, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
-                TokenType::StringLiteral(string)
+                debug!("Collected string: \"{}\" at {}:{}[{}] to {}:{}[{}]", string, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
+                TokenType::Literal(LiteralToken::StringLiteral(string))
             }
             '\'' => {
                 self.advance()?;
                 let character = self.consume()?;
                 ensure!(self.consume()? == '\'', LexerError::InvalidCharacterLiteral(self.line_no, self.col_no));
                 debug!("Collected character literal: {:?} at {}:{}[{}] to {}:{}[{}]", character, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
-                TokenType::CharacterLiteral(character)
+                TokenType::Literal(LiteralToken::CharacterLiteral(character))
             }
             '#' => {
                 debug!("Found comment at {}:{}[{}]", self.line_no, self.col_no, self.index);
