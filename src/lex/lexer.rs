@@ -33,6 +33,8 @@ pub enum LexerError {
     InvalidEOF(usize, usize),
     #[error("Unexpected EOL at {0}:{1}")]
     InvalidEOL(usize, usize),
+    #[error("Invalid token {0:?} at {2}:{3}[1]")]
+    UnknownToken(Token, usize, usize, usize),
     #[error("Unknown lexer error at {0}:{1}")]
     Unknown(usize, usize),
 }
@@ -227,6 +229,31 @@ impl Lexer {
         Ok(c)
     }
 
+    fn try_consume(&mut self) -> Result<Option<char>> {
+        if self.has_next() {
+            let c = self.curr_char;
+            self.advance()?;
+            Ok(Some(c))
+        } else {
+            Ok(None)
+        }
+    }
+
+    fn peek(&self) -> Result<Option<char>> {
+        if !self.has_next() {
+            return Ok(None);
+        }
+        let c = self.source.chars().nth(self.index + 1).unwrap();
+        trace!(
+            "Peeked character: {:?} at {}:{}[{}]",
+            c,
+            self.line_no,
+            self.col_no,
+            self.index
+        );
+        Ok(Some(c))
+    }
+
     fn collect(&mut self, n: usize) -> Result<&str> {
         let start = self.index;
         let end = self.index + n;
@@ -284,6 +311,7 @@ impl Lexer {
     }
 
     fn get_next_token(&mut self) -> Result<Token> {
+        trace!("Getting token at {}:{}[{}]", self.line_no, self.col_no, self.index);
         let start = (self.index, self.line_no, self.col_no);
         let token = match self.curr_char {
             n if self.is_whitespace() => {
@@ -376,9 +404,18 @@ impl Lexer {
                 self.advance_eol()?;
                 return self.get_next_token();
             }
-            _ => TokenType::from_char(self.consume()?),
+            _ => TokenType::from_char(self.consume()?, Some(self.curr_char))
+        }.at(start.0, start.1, start.2);
+
+        if let TokenType::Unknown(_) = token.token_type() {
+            bail!(LexerError::UnknownToken(token, self.index, self.line_no, self.col_no))
         }
-        .at(start.0, start.1, start.2);
+
+        if let TokenType::Syntax(_) = token.token_type() {
+            self.advance_n(token.length() - 1)?;
+        }
+
+        trace!("Returning token {:?}", token);
         Ok(token)
     }
 }

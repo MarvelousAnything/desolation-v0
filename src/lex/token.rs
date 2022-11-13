@@ -21,8 +21,8 @@ impl TokenType {
         }
     }
 
-    pub fn from_char(c: char) -> Self {
-        SyntaxToken::from_char(c)
+    pub fn from_char(c: char, next: Option<char>) -> Self {
+        SyntaxToken::from_char(c, next)
             .map(TokenType::Syntax)
             .unwrap_or_else(|| TokenType::Unknown(c))
     }
@@ -65,6 +65,20 @@ impl Token {
             self.token_type,
             TokenType::Literal(LiteralToken::Character(_))
         )
+    }
+    
+    pub fn length(&self) -> usize {
+        match &self.token_type {
+            TokenType::Keyword(k) => k.length(),
+            TokenType::Syntax(s) => s.length(),
+            TokenType::IdentifierToken(s) => s.len(),
+            TokenType::Literal(LiteralToken::Integer(i)) => i.to_string().len(),
+            TokenType::Literal(LiteralToken::String(s)) => s.len(),
+            TokenType::Literal(LiteralToken::Character(c)) => c.len_utf8(),
+            TokenType::Unknown(c) => c.len_utf8(),
+            TokenType::Eof => 0,
+            TokenType::NL => 1,
+        }
     }
 
     pub fn index(&self) -> usize {
