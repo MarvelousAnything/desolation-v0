@@ -8,7 +8,7 @@ pub enum TokenType {
     Literal(LiteralToken),
     Unknown(char),
     Eof,
-    NL
+    NL,
 }
 
 impl TokenType {
@@ -50,15 +50,24 @@ impl Token {
     }
 
     pub fn is_integer_literal(&self) -> bool {
-        matches!(self.token_type, TokenType::Literal(LiteralToken::IntegerLiteral(_)))
+        matches!(
+            self.token_type,
+            TokenType::Literal(LiteralToken::IntegerLiteral(_))
+        )
     }
 
     pub fn is_string_literal(&self) -> bool {
-        matches!(self.token_type, TokenType::Literal(LiteralToken::StringLiteral(_)))
+        matches!(
+            self.token_type,
+            TokenType::Literal(LiteralToken::StringLiteral(_))
+        )
     }
 
     pub fn is_character_literal(&self) -> bool {
-        matches!(self.token_type, TokenType::Literal(LiteralToken::CharacterLiteral(_)))
+        matches!(
+            self.token_type,
+            TokenType::Literal(LiteralToken::CharacterLiteral(_))
+        )
     }
 
     pub fn index(&self) -> usize {

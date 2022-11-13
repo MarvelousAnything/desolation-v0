@@ -1,9 +1,9 @@
-use std::fmt::Display;
 use crate::lex::token::{Token, TokenType};
-use anyhow::{bail, ensure, Result};
-use log::{debug};
-use thiserror::Error;
 use crate::lex::types::{KeywordToken, LiteralToken};
+use anyhow::{bail, ensure, Result};
+use log::debug;
+use std::fmt::Display;
+use thiserror::Error;
 
 #[derive(Debug, Clone)]
 pub struct Lexer {
@@ -53,38 +53,48 @@ impl Display for TokenStream {
 
 impl TokenStream {
     pub fn get_keywords(&self) -> Self {
-        self.tokens.iter()
-            .filter(|t| t.is_keyword()).cloned()
+        self.tokens
+            .iter()
+            .filter(|t| t.is_keyword())
+            .cloned()
             .collect::<TokenStream>()
     }
 
     pub fn get_identifiers(&self) -> Self {
-        self.tokens.iter()
-            .filter(|t| t.is_identifier()).cloned()
+        self.tokens
+            .iter()
+            .filter(|t| t.is_identifier())
+            .cloned()
             .collect::<TokenStream>()
     }
 
     pub fn get_integer_literals(&self) -> Self {
-        self.tokens.iter()
-            .filter(|t| t.is_integer_literal()).cloned()
+        self.tokens
+            .iter()
+            .filter(|t| t.is_integer_literal())
+            .cloned()
             .collect::<TokenStream>()
     }
 
     pub fn get_string_literals(&self) -> Self {
-        self.tokens.iter()
-            .filter(|t| t.is_string_literal()).cloned()
+        self.tokens
+            .iter()
+            .filter(|t| t.is_string_literal())
+            .cloned()
             .collect::<TokenStream>()
     }
 
     pub fn get_character_literals(&self) -> Self {
-        self.tokens.iter()
-            .filter(|t| t.is_character_literal()).cloned()
+        self.tokens
+            .iter()
+            .filter(|t| t.is_character_literal())
+            .cloned()
             .collect::<TokenStream>()
     }
 }
 
 impl FromIterator<Token> for TokenStream {
-    fn from_iter<T: IntoIterator<Item=Token>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = Token>>(iter: T) -> Self {
         let tokens = iter.into_iter().collect();
         TokenStream { tokens }
     }
@@ -120,21 +130,25 @@ impl Lexer {
         // Post processing.
         // fold consecutive NL tokens into one.
         // find a NL token, then delete all the NL tokens until the next non-NL token.
-        let indices = tokens.iter()
+        let indices = tokens
+            .iter()
             .enumerate()
             .filter(|(_, t)| t.token_type() == TokenType::NL)
             .map(|(i, _)| i)
             .collect::<Vec<usize>>();
-        let indices_folded = indices.iter().fold((Vec::new(), Vec::new()), |mut acc, i| {
-            if let Some(last) = acc.0.last() {
-                if i - last == 1 {
-                    acc.1.push(*last);
-                    acc.0.pop();
+        let indices_folded = indices
+            .iter()
+            .fold((Vec::new(), Vec::new()), |mut acc, i| {
+                if let Some(last) = acc.0.last() {
+                    if i - last == 1 {
+                        acc.1.push(*last);
+                        acc.0.pop();
+                    }
                 }
-            }
-            acc.0.push(*i);
-            acc
-        }).1;
+                acc.0.push(*i);
+                acc
+            })
+            .1;
 
         for i in indices_folded.iter().rev() {
             tokens.remove(*i);
@@ -159,9 +173,18 @@ impl Lexer {
     }
 
     fn get_curr(&self) -> Result<char> {
-        ensure!(self.has_next(), LexerError::InvalidEOF(self.line_no, self.col_no));
+        ensure!(
+            self.has_next(),
+            LexerError::InvalidEOF(self.line_no, self.col_no)
+        );
         let c = self.source.chars().nth(self.index).unwrap();
-        trace!("Got current character: {:?} at {}:{}[{}]", c, self.line_no, self.col_no, self.index);
+        trace!(
+            "Got current character: {:?} at {}:{}[{}]",
+            c,
+            self.line_no,
+            self.col_no,
+            self.index
+        );
         Ok(c)
     }
 
@@ -264,13 +287,33 @@ impl Lexer {
         let start = (self.index, self.line_no, self.col_no);
         let token = match self.curr_char {
             n if self.is_whitespace() => {
-                trace!("Found whitespace {:?} at {}:{}[{}]", n, self.line_no, self.col_no, self.index);
+                trace!(
+                    "Found whitespace {:?} at {}:{}[{}]",
+                    n,
+                    self.line_no,
+                    self.col_no,
+                    self.index
+                );
                 self.skip_whitespace()?;
-                debug!("Skipped {} whitespace from {}:{}[{}] to {}:{}[{}]", self.index - start.0, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
+                debug!(
+                    "Skipped {} whitespace from {}:{}[{}] to {}:{}[{}]",
+                    self.index - start.0,
+                    start.1,
+                    start.2,
+                    start.0,
+                    self.line_no,
+                    self.col_no,
+                    self.index
+                );
                 return self.get_next_token();
             }
             '\n' => {
-                trace!("Found newline at {}:{}[{}]", self.line_no, self.col_no, self.index);
+                trace!(
+                    "Found newline at {}:{}[{}]",
+                    self.line_no,
+                    self.col_no,
+                    self.index
+                );
                 // fold newlines into a single token
                 self.col_no = 0;
                 self.line_no += 1;
@@ -282,38 +325,60 @@ impl Lexer {
             n if n.is_alphabetic() => {
                 let identifier = self.collect_identifier()?;
                 if let Some(keyword) = KeywordToken::from_str(&identifier) {
-                    debug!("Found keyword {:?} at {}:{}[{}]", keyword, self.line_no, self.col_no, self.index);
+                    debug!(
+                        "Found keyword {:?} at {}:{}[{}]",
+                        keyword, self.line_no, self.col_no, self.index
+                    );
                     TokenType::Keyword(keyword)
                 } else {
-                    debug!("Found identifier {:?} at {}:{}[{}]", identifier, self.line_no, self.col_no, self.index);
+                    debug!(
+                        "Found identifier {:?} at {}:{}[{}]",
+                        identifier, self.line_no, self.col_no, self.index
+                    );
                     TokenType::IdentifierToken(identifier)
                 }
             }
             n if n.is_numeric() => {
                 let integer = self.collect_integer()?;
-                debug!("Collected integer: {} at {}:{}[{}] to {}:{}[{}]", integer, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
+                debug!(
+                    "Collected integer: {} at {}:{}[{}] to {}:{}[{}]",
+                    integer, start.1, start.2, start.0, self.line_no, self.col_no, self.index
+                );
                 TokenType::Literal(LiteralToken::IntegerLiteral(integer))
             }
             '"' => {
                 self.advance()?;
                 let string = self.collect_string()?;
-                debug!("Collected string: \"{}\" at {}:{}[{}] to {}:{}[{}]", string, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
+                debug!(
+                    "Collected string: \"{}\" at {}:{}[{}] to {}:{}[{}]",
+                    string, start.1, start.2, start.0, self.line_no, self.col_no, self.index
+                );
                 TokenType::Literal(LiteralToken::StringLiteral(string))
             }
             '\'' => {
                 self.advance()?;
                 let character = self.consume()?;
-                ensure!(self.consume()? == '\'', LexerError::InvalidCharacterLiteral(self.line_no, self.col_no));
-                debug!("Collected character literal: {:?} at {}:{}[{}] to {}:{}[{}]", character, start.1, start.2, start.0, self.line_no, self.col_no, self.index);
+                ensure!(
+                    self.consume()? == '\'',
+                    LexerError::InvalidCharacterLiteral(self.line_no, self.col_no)
+                );
+                debug!(
+                    "Collected character literal: {:?} at {}:{}[{}] to {}:{}[{}]",
+                    character, start.1, start.2, start.0, self.line_no, self.col_no, self.index
+                );
                 TokenType::Literal(LiteralToken::CharacterLiteral(character))
             }
             '#' => {
-                debug!("Found comment at {}:{}[{}]", self.line_no, self.col_no, self.index);
+                debug!(
+                    "Found comment at {}:{}[{}]",
+                    self.line_no, self.col_no, self.index
+                );
                 self.advance_eol()?;
                 return self.get_next_token();
             }
-            _ => TokenType::from_char(self.consume()?)
-        }.at(start.0, start.1, start.2);
+            _ => TokenType::from_char(self.consume()?),
+        }
+        .at(start.0, start.1, start.2);
         Ok(token)
     }
 }

@@ -1,6 +1,6 @@
-use std::fs;
-use log::{error, info};
 use desolation::lex::Lexer;
+use log::{error, info};
+use std::fs;
 
 fn main() {
     sensible_env_logger::init!();
