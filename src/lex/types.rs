@@ -81,7 +81,7 @@ impl SyntaxToken {
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub enum LiteralToken {
-    CharacterLiteral(char),
-    IntegerLiteral(i64),
-    StringLiteral(String),
+    Character(char),
+    Integer(i64),
+    String(String),
 }

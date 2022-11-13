@@ -6,7 +6,7 @@ pub struct Parser {
 
 impl Parser {
     // This should parse a token stream into an AST.
-    pub fn parse(tokens: TokenStream) {
+    pub fn parse(_tokens: TokenStream) {
         todo!("Implement parser");
     }
 }

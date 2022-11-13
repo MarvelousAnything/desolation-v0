@@ -52,21 +52,18 @@ impl Token {
     pub fn is_integer_literal(&self) -> bool {
         matches!(
             self.token_type,
-            TokenType::Literal(LiteralToken::IntegerLiteral(_))
+            TokenType::Literal(LiteralToken::Integer(_))
         )
     }
 
     pub fn is_string_literal(&self) -> bool {
-        matches!(
-            self.token_type,
-            TokenType::Literal(LiteralToken::StringLiteral(_))
-        )
+        matches!(self.token_type, TokenType::Literal(LiteralToken::String(_)))
     }
 
     pub fn is_character_literal(&self) -> bool {
         matches!(
             self.token_type,
-            TokenType::Literal(LiteralToken::CharacterLiteral(_))
+            TokenType::Literal(LiteralToken::Character(_))
         )
     }
 

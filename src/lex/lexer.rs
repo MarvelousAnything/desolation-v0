@@ -344,7 +344,7 @@ impl Lexer {
                     "Collected integer: {} at {}:{}[{}] to {}:{}[{}]",
                     integer, start.1, start.2, start.0, self.line_no, self.col_no, self.index
                 );
-                TokenType::Literal(LiteralToken::IntegerLiteral(integer))
+                TokenType::Literal(LiteralToken::Integer(integer))
             }
             '"' => {
                 self.advance()?;
@@ -353,7 +353,7 @@ impl Lexer {
                     "Collected string: \"{}\" at {}:{}[{}] to {}:{}[{}]",
                     string, start.1, start.2, start.0, self.line_no, self.col_no, self.index
                 );
-                TokenType::Literal(LiteralToken::StringLiteral(string))
+                TokenType::Literal(LiteralToken::String(string))
             }
             '\'' => {
                 self.advance()?;
@@ -366,7 +366,7 @@ impl Lexer {
                     "Collected character literal: {:?} at {}:{}[{}] to {}:{}[{}]",
                     character, start.1, start.2, start.0, self.line_no, self.col_no, self.index
                 );
-                TokenType::Literal(LiteralToken::CharacterLiteral(character))
+                TokenType::Literal(LiteralToken::Character(character))
             }
             '#' => {
                 debug!(
@@ -380,5 +380,11 @@ impl Lexer {
         }
         .at(start.0, start.1, start.2);
         Ok(token)
+    }
+}
+
+impl Default for Lexer {
+    fn default() -> Self {
+        Self::new()
     }
 }
