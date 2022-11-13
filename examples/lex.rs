@@ -11,6 +11,9 @@ fn main() {
     let tokens = lexer.lex(source);
     match tokens {
         Ok(tokens) => {
+            for token in &tokens.tokens {
+                info!("{:?}", token);
+            }
             println!("Keywords:\n{}", tokens.get_keywords());
             println!("Identifiers:\n{}", tokens.get_identifiers());
             println!("Integers:\n{}", tokens.get_integer_literals());
