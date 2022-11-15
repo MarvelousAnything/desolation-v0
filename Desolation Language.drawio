@@ -1,1 +1,65 @@
-<mxfile host="app.diagrams.net" modified="2022-11-15T15:03:47.569Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36" etag="9WoelvYJrdjtuM98TJMO" version="20.5.3" type="github" pages="3"><diagram id="d20hImtA9YluO1nlsjxn" name="Top Level Compiler Design">ddHNEoIgEADgp+GOYH9ns7p08tCZkU2YQddBGq2nTwfMGOvE8u3CMgvhWT2crWjVFSUYwqgcCD8SxpKUbcdlkqeX3SH1UFktQ9EChX5BQBr0oSV0UaFDNE63MZbYNFC6yIS12MdldzRx11ZUsIKiFGatNy2d8rrf0MUvoCs1d05oyNRiLg7QKSGx/yKeE55ZROejesjATMOb5+LPnf5kPw+z0LgfB8ZguXvcRD/E8zc=</diagram><diagram id="YInnNuEm8md0ZC7T_NTC" name="SQ Program Execution">ddHNEoIgEADgp+GOYH9ns7p08tCZkU2YQddBGq2nTwfMGOvE8u3CMgvhWT2crWjVFSUYwqgcCD8SxpKUbcdlkqeX3SH1UFktQ9EChX5BQBr0oSV0UaFDNE63MZbYNFC6yIS12MdldzRx11ZUsIKiFGatNy2d8rrf0MUvoCs1d05oyNRiLg7QKSGx/yKeE55ZROejesjATMOb5+LPnf5kPw+z0LgfB8ZguXvcRD/E8zc=</diagram><diagram id="ZXch7w1B5WngjU5GDo5g" name="Page-3">ddHNEoIgEADgp+GOYH9ns7p08tCZkU2YQddBGq2nTwfMGOvE8u3CMgvhWT2crWjVFSUYwqgcCD8SxpKUbcdlkqeX3SH1UFktQ9EChX5BQBr0oSV0UaFDNE63MZbYNFC6yIS12MdldzRx11ZUsIKiFGatNy2d8rrf0MUvoCs1d05oyNRiLg7QKSGx/yKeE55ZROejesjATMOb5+LPnf5kPw+z0LgfB8ZguXvcRD/E8zc=</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-11-15T15:20:02.578Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36" etag="_zLwo2Lk_5YXVxQ8-8fG" version="20.5.3" type="github" pages="3">
+  <diagram id="d20hImtA9YluO1nlsjxn" name="Top Level Compiler Design">
+    <mxGraphModel dx="1426" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="0d6R_2LlXt6RS1v0zTJK-1" target="0d6R_2LlXt6RS1v0zTJK-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-4" value="Token Stream" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="0d6R_2LlXt6RS1v0zTJK-3">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-1" value="Lexer" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="220" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="0d6R_2LlXt6RS1v0zTJK-2" target="0d6R_2LlXt6RS1v0zTJK-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-10" value="Syntax Tree" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="0d6R_2LlXt6RS1v0zTJK-9">
+          <mxGeometry x="-0.05" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-2" value="Syntax Analyzer" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="0d6R_2LlXt6RS1v0zTJK-5" target="0d6R_2LlXt6RS1v0zTJK-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-7" value="Char Stream" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="0d6R_2LlXt6RS1v0zTJK-6">
+          <mxGeometry x="-0.05" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-5" value="File Reader" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-8" value="Syntax Analyzer" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="500" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0d6R_2LlXt6RS1v0zTJK-11" value="Symbol Table" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="YInnNuEm8md0ZC7T_NTC" name="SQ Program Execution">
+    <mxGraphModel dx="1426" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ZXch7w1B5WngjU5GDo5g" name="Page-3">
+    <mxGraphModel dx="1426" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
