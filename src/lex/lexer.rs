@@ -93,6 +93,12 @@ impl TokenStream {
             .cloned()
             .collect::<TokenStream>()
     }
+
+    pub fn reverse(&self) -> Self {
+        let mut tokens = self.tokens.clone();
+        tokens.reverse();
+        TokenStream { tokens }
+    }
 }
 
 impl FromIterator<Token> for TokenStream {
