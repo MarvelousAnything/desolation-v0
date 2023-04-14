@@ -317,7 +317,12 @@ impl Lexer {
     }
 
     fn get_next_token(&mut self) -> Result<Token> {
-        trace!("Getting token at {}:{}[{}]", self.line_no, self.col_no, self.index);
+        trace!(
+            "Getting token at {}:{}[{}]",
+            self.line_no,
+            self.col_no,
+            self.index
+        );
         let start = (self.index, self.line_no, self.col_no);
         let token = match self.curr_char {
             n if self.is_whitespace() => {
@@ -410,11 +415,17 @@ impl Lexer {
                 self.advance_eol()?;
                 return self.get_next_token();
             }
-            _ => TokenType::from_char(self.consume()?, Some(self.curr_char))
-        }.at(start.0, start.1, start.2);
+            _ => TokenType::from_char(self.consume()?, Some(self.curr_char)),
+        }
+        .at(start.0, start.1, start.2);
 
         if let TokenType::Unknown(_) = token.token_type() {
-            bail!(LexerError::UnknownToken(token, self.index, self.line_no, self.col_no))
+            bail!(LexerError::UnknownToken(
+                token,
+                self.index,
+                self.line_no,
+                self.col_no
+            ))
         }
 
         if let TokenType::Syntax(_) = token.token_type() {
